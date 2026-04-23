@@ -1,8 +1,52 @@
 `useState` é um hook do React usado em componentes funcionais para gerenciar e atualizar o estado específico do componente. Ele recebe um valor inicial e retorna um array com o valor do estado atual e uma função para atualizar esse estado. Isso permite que você manipule dados dinâmicos dentro do seu componente, como contadores, campos de formulário ou quaisquer valores que mudem.
+
+Como funciona?
 um exemplo de uso é nesse contador de passos, que atualiza o valor do estado com base no valor anterior. Cada vez que você der um passo, basta clicar no botão. Ao final do dia, ele vai te dizer quantos passos você deu. 
+import React, { useState } from 'react';
+function StepTracker() {
+  const [steps, setSteps] = useState(0);
 
+  function increment() {
+    setSteps(prevState => prevState + 1);
+  }
 
-
+  return (
+    <div>
+      Sua contagem de passos hoje é {steps}!
+      <br />
+      <button onClick={increment}>
+        Contar outro passo
+      </button>
+    </div>
+  );
+}
+ReactDOM.render(
+  <StepTracker />,
+  document.querySelector('#root')
+);
 
 
 O useEffect é um dos hooks mais importantes do React e permite controlar o ciclo de vida do componente em que está presente, ele é executado a cada renderização do componente (ou seja, quando uma variável de estado muda) e também pode ser executado sempre que um valor específico mencionado em seu array de dependências for alterado.
+Como funciona?
+Exemplo:
+
+import React, { useState, useEffect } from 'react';
+function FriendStatus(props) {
+  const [isOnline, setIsOnline] = useState(null);
+
+  useEffect(() => {
+    function handleStatusChange(status) {
+      setIsOnline(status.isOnline);
+    }
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  if (isOnline === null) {
+    return 'Loading...';
+  }
+  return isOnline ? 'Online' : 'Offline';
+}
